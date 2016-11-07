@@ -1,0 +1,262 @@
+\section{Microservices - What and Why?}
+
+\subsection{Einführung}
+kostenloses Buch unter: \\
+\href{http://microservices-book.com/primer}{Download} \\
+\href{C:/Users/annekathrin/Downloads/microservices-primer.pdf}{microservices-primer.pdf}
+\\
+
+\href{mailto:slideswjax2016workshop@ewolff.com}{slideswjax2016workshop@ewolff.com}
+Antwort-Mail mit Slides \\
+
+siehe: 01-MicroServices.pdf \\
+
+\subsection{Definition}
+
+\begin{itemize}
+  \item independent deployment units (verschiedene unabhängige Einheiten, die
+  sich einzeln bauen lassen)
+  \item jede Technolgie möglich
+  \item jede Infrastruktur
+  \item UI + Logik
+\end{itemize}
+
+\subsection{Vorteil} 
+\begin{itemize}
+  \item starke Entkopplung - einzelne Module
+\end{itemize}
+
+
+\subsection{Ziel} 
+\begin{itemize}
+  \item ein großes Gesamtsystem - müssen zusammen kolaborieren
+\end{itemize}
+
+
+\section{Möglichkeiten}
+\subsection{Links}
+\begin{itemize}
+  \item Kolaborierung mittels Links
+  \item Abstimmung von URLs
+  \item Teams müssen wenig voneinander wissen
+  \item große Kopplung
+\end{itemize}
+
+\subsection{Datenreplikation}
+bei Auswertungen -> Daten replizieren
+
+getrennte Datenhaushalte
+
+Rest und Messaging
+
+\subsection{Unterteilung in Schichten}
+
+am Beispiel E-Commerce-Shop
+
+Frontends: iOS, Android, Web
+
+Order
+Search
+Catalog
+Customer
+Rechnung
+
+Search -- Datenreplikation --> Catalog
+Order --> Customer
+Order --> Billing
+
+für Frontends -> Backends bauen --> zur Optimierung, angepasster Bestellservice
+
+Idee:\\
+wiederverwendbare Backendservices
+Frontendspezifische Implementierungen
+
+\subsubsection{Vorteile/ Benefits}
+guter Weg zum bauen einer API
+einfacher Weg zum "`reinmigrieren"'
+ähnliche Struktur im Unternehmen -> Teams für iOS, Android, Web
+
+
+\subsubsection{Nachteile}
+Backends enthalten gleiche Logik für gleiche Prozesse -> Redundanzen
+bei Änderungen sind mehrere Schichten betroffen -> Koordinierung, hoher
+\textbf{Kommunikationsaufwand}
+hoher Kommunikationsaufwand zwischen den Services
+was ist wenn ein Service nicht antwortet?
+mehr Komplexität
+
+
+es macht nur Sinn, wenn die Komplexität meines Gesamtsystems sinkt
+- Entkopplung von Teams
+
+
+\subsection{Selft-contained Systems (SCS)}
+
+scs-architecture.org
+
+genau definert
+- autonome Web.Anwendung
+- optionale Service API
+
+- Module enthalten auch den Webanteil (UI) - Daten \& Logik
+-> Prozesse + UI ändern
+
+- keine geteilte UI und Business-Logik
+
+- Aufteilung in fachliche Dinge + Möglichkeit zur Aufteilung aus fachlicher
+Sicht
+
+\subsubsection{einzelne Module}
+Idee: 
+Checkout-Modul
+- Warenkorb kommt rein
+- Umwandlung in Bestellung
+- Anreicherung von Informationen
+
+intern möglich weiter aufzuteilen
+Bsp. Ein-Klick-Prozess
+normaler Bestellvorgang
+
+Invoicing-Modul
+
+Search-Modul
+
+Browsing-Modul
+
+\subsection{Micoroscervices vs. SOA}
+% Tabelle
+Kriterien				| Microservice | SOA
+Deployment von Services | 1 Service = 1 deployment Einheit | 1 deployment
+Einheit = n Services
+Fazit | Entkopllung | schichtung
+
+völlig unterschiedlich
+
+
+\section{Größe von Microservices - sollten klein sein}
+\begin{itemize}
+  \item möglichst kleine Module - besser zu verstehen, maximal ein Team (7-8)
+  \item einfacher zu ersetzen - Ersetzbarkeit
+  \item Legacy Migration wird einfacher
+  \item Umstieg auf neue Technologien einfacher (pro Service)
+\end{itemize}
+
+\section{Größe von Microservices - sollten groß sein}
+
+\begin{itemize}
+  \item weniger Infrastruktur notwendig
+  \item weniger Kommunikation notwendig
+  \item größer und weniger - besser Umstrukturierung
+\end{itemize}
+
+\section{Conway's Law}
+\begin{itemize}
+  \item als Begrenzung sehen
+  \item bzw. als enabler sehen
+  \item technische und fachliche Trennung
+\end{itemize}
+
+\section{Microservice Bounded Context}
+\subsection{Domain Driven Desgin}
+\subsection{Context Relationships}
+\begin{itemize}
+  \item grundlegende Daten gemeinsam Nutzen
+  \item gemeinsame Basis - wird von allen genutzt - starke Kopplung
+  \item Customer/ Supplier - Team für Bestellprozess und Team für Registrierung
+  \item Team für Bestellprozess gibt dem Registrierungsprozess vor, welche
+  Daten nötig sind
+  \item conformist - nutzt die Daten die vorhanden, wenn Änderungen, sollte
+  informiert werden - kann keine Vorgaben machen!
+  
+\end{itemize}
+
+Registrierung 	-> Invoice (Datenfragmente von Registrierung vorhanden)
+				-> Checkout (Datenfragmente von Registrierung vorhanden)
+				
+Sicherstellen, dass Daten in allen Modulen ankommen -> Event-Sourcing
+Event-Sourcing: Events lassen sich speichern und immer wieder einspielen
+Bsp. Kafka
+oder ein zentraler Datenspeicher
+
+
+Invoice					Checkout
+BillingAdress
+		||				||
+		v				v
+		Customer-Service		<- SharedKernel
+		Name
+		
+Invoice muss immer beim Customer-Service anfragen
+
+
+\section{Warum Microservces?}
+\begin{itemize}
+  \item (unabhängige) skalierbare Architektur
+  \item Kommunikation begrenzen (Komponenten und Teams)
+  \item einfacher Experimientieren
+  \item ersetzbar
+  \item strengere Modularisierung
+  \item Robustheit- System ist stabiler, da nur ein Service ausfällt und nicht
+  das ganze System - Fehlermanagement - Umgang mit fehlerhaften Services
+  \item weniger Risiko - Module ohne Änderungen nicht neu gebaut -> weniger
+  Fehler
+\end{itemize}
+
+\section{Umgang mit Lagacy-Anwendungen}
+\begin{itemize}
+  \item Weggang vom Monolithen - komplexer Abhängigkeitsgraph
+  \item nachhaltige Entwicklung
+\end{itemize}
+
+\subsection{(Deployment)-Monolith}
+\begin{itemize}
+  \item Architketur verrottet - schlecht strukturiert
+  \item nicht mehr wartbar
+  \item nicht ersetzbar
+\end{itemize}
+
+\subsection{Microservices}
+\begin{itemize}
+  \item Architekturverletzungen sofort sichtbar, da über "Rest"'-Schnittstelle
+  nicht zugelassen
+\end{itemize}
+
+\section{Continuos Delivery}
+\subsection{Probleme beim Monolithen}
+\begin{itemize}
+  \item komplexe Infrastruktur
+  \item langsames Feedback
+  \item große Deployment-Enheit
+  \item Deployment langsam
+\end{itemize}
+
+\subsection{Vorteile bei Microservices}
+\begin{itemize}
+  \item unabhängiges Deployment
+  \item kleiner
+  \item einfacher aufzubauen
+\end{itemize}
+
+Microservices nur mit Continuous Delivery!!!!!!
+
+Integrations-Tests minimieren, da Flaschenhals
+nur ein Microservices im Integrations\~test -> alle anderen müssen warten
+
+
+Frage: Will ich Microservices machen?
+		1. JA						2. NEIN
+		/		\
+asynchron		synchron
+SCS				Layered
+
+
+
+Standardisierung von 
+\begin{itemize}
+  \item Monitoring
+  \item Logging
+  \item Deployment/ config scripts
+\end{itemize}
+
+\subsection{Verteiltes System - Distributed System}
+Regel: verteile deine Objekte NICHT!!
